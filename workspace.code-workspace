@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"name": "xieli1999",
+			"path": "xieli1999"
+		}
+	],
+	"settings": {
+		"git.ignoreLimitWarning": true
+	}
+}

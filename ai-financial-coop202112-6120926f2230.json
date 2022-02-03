@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "ai-financial-coop202112",
+  "private_key_id": "6120926f22301847a672094dbb9ef2771eb95dcf",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCpRgC5lbzp8Rvd\n1zuiorOFXmgN74V0SHr5nDgboxBF29OBhK8/m4wmHjxrGmQUB+/y9lx4YZbD6f/v\n7tavVnlEud/9aLFJ/k2KRW1A0oPJlaooGDeRPvjVHOhpmxzgkIbK7rDxaHk8lolj\nTU/xeNiyZK3yY9mgfy2czqD2S8lXSMSi41+70BKr7uXFjDKElxTBMJyTHrkVpcs1\nTORQCFgEbBLZtReuX4Np9hIPCSGq5AwqnhW/P1MjnXUd/7ka2eQaDh56kzQiiONX\nwPKN/ZvHky9MWeV/xu25GDd5EHj6JSJXWLhgl17OSnz4jpG2ZeejRA8nCpF0PC8u\nr6/z0y+TAgMBAAECggEAPtyiVElJWM+Te7T8jo9Bf9vpZJN4yhBIqv3a0FikKG1U\nhJrTwhlv2JAN+/BXDiFMeLwI5yPGq4bw5xeZXpAMhPtKNX91p3brMNhLlHEZQ/ly\nsWUc7bGnEu2jWeSiurqxdBdkWqJjs55r8xa5A4HPZ6CAAK4YGcRhGgSaPh0y7lia\n+Lls7IJVpcMaQ13EHXwMDgnzVv4UKCcbtFfdlklAAq+Wuw1Y75iJo3REyFmWDv0d\nfRhVPH64PmB2pE+PCmVZos/MuJlxCSpELK/kKB+c8ZrxKn7phv70M0Ms/VAdPmgt\n7F0TxCOXKOZpaolZiImnH0il2yJGr/cwU2UuiBqLwQKBgQDZtD51fpKN9iWzgI3r\nCb4RNL8rfaEPGyiA8zalZSfH5GyE1kk6SkYaOujvS4v/DupjuXpssPMxgWFv70d5\n6rJAzzLTbKgFtm15xE8/BoYQpue0nkrPxX5D8+gUyUdJ24RwZuL5QVWJ7pwZqTaS\n1NiAnXhPQXUih1oPfG9bRr+HQwKBgQDHDM6im9SrBH+r7AGWZdR5hgbafaFk08SW\nD3nri8fniN9KPwogcn6Ag5RGf8RB1+BdzNzd/1crBphHMEueRq5xaW3tKWmTajM2\nVzbfbvCvRwrqj5iwJALUHZeim57qLPsmpa8HdKyk4hAaDIWf0NYhkcdnas9fCjBx\nFSFy+hppcQKBgFu00Ma/zc6dTN5jneTPktA+rvUME8eAQjynt3JOvUY4E/qVJf23\nAfbUsAD1iwCjcNsXa9nTZG6LONdlLW/PDM2+OoPTdqgJY+5yYouDHQBwvpRYRd1m\nLT1ExpPTAgO7w/txa9Vhzz2uVPV+UW3i2Vy8eMyyHzyvVaHGYkZJ9C5vAoGAacbx\njFI5WsRiQG+DjHQCzK2fuL5oZRdwcbo5tSWsDuualW8Yp5OQjCTgR/Kfzcm1rsMu\nYD7QCMpRZAtTNAIls5kuVIjcVP1rx6XjQCtJdivPrkSvBHOumSA8s6n1ckaDFM+Z\nSuIC2QBVRDKBVCN7l41LpTaKitv0UDPFeb9VB9ECgYEAnQIDeBDXmaAa4oh93vZM\nJ0rUd2ri9iK57IcNjkpQqBFlquizbaaDmYzpWs6L8yZhb5KUAXaNHJzgXL0U3zci\nD9bdiCL9GTcWA5zDmdPNzQMVNYrB+RM+ae8y3ZwrSnGvlTo4wedhd5YW4WNxS88S\nNo8Ki0uUddbttNikxKwVrtc=\n-----END PRIVATE KEY-----\n",
+  "client_email": "aif0013@ai-financial-coop202112.iam.gserviceaccount.com",
+  "client_id": "114636025731337976154",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/aif0013%40ai-financial-coop202112.iam.gserviceaccount.com"
+}
