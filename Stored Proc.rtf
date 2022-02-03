@@ -1,0 +1,635 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2636
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 HelveticaNeue;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
+\margl1440\margr1440
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs22 \cf2 \up0 \nosupersub \ulnone CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_Applicant`(\
+		in _PersonID varchar(30),\
+        in _First_Name varchar(30),\
+		in _Last_Name varchar(30),\
+		in _English_Name varchar(30),\
+        in _Gender varchar(10),\
+		in _Date_of_Birth date,\
+		in _Country_of_Birth varchar(20),\
+		in _Province_of_Birth  varchar(15),\
+		in _Citizenship  varchar(20),\
+		in _Tax_Status varchar(15),\
+		in _Live_in_Canada_Since date,\
+		in _Marital_Status  varchar(10),\
+		in _Cellphone  varchar(30),\
+		in _Email  varchar(50),\
+		in _Bankruptcy tinyint,\
+		in _Discharge_Date Date\
+        )\
+BEGIN\
+	declare totalCount int default 0;\
+    declare _result varchar(500);\
+    declare _existing_PersonID varchar(30);\
+    declare _ErrorCode int default 0;\
+	\
+    DECLARE exit handler FOR SQLEXCEPTION\
+	BEGIN\
+	ROLLBACK;\
+	set _result= 'DB Error', _existing_PersonID=null, _ErrorCode=99;\
+	END;\
+        \
+    START TRANSACTION;\
+\
+    SELECT COALESCE( COUNT(*), 0), PersonID INTO totalCount, _existing_PersonID FROM Person WHERE\
+		First_Name = _First_Name AND Last_Name = _Last_Name group by PersonID;\
+	if totalCount = 1 then \
+		update Person\
+			set \
+				English_Name = _English_Name,\
+				Gender = _Gender,\
+				Date_of_Birth = _Date_of_Birth,\
+				Country_of_Birth = _Country_of_Birth,\
+				Province_of_Birth = _Province_of_Birth,\
+				Citizenship = _Citizenship,\
+				Tax_Status = _Tax_Status,\
+				Live_in_Canada_Since = _Live_in_Canada_Since,\
+				Marital_Status = _Marital_Status,\
+				Cellphone = _Cellphone,\
+				Email = _Email,\
+				Bankruptcy = _Bankruptcy,\
+				Discharge_Date = _Discharge_Date\
+            where PersonID = _PersonID;\
+        if @@error_count > 0 then\
+			set _ErrorCode = 2;\
+		end if;\
+          \
+		set _result = CONCAT("This record: ", _First_Name, " ", _Last_Name, " is in the datebase already with the PersonID of ", _existing_PersonID);\
+	elseif totalCount = 0 then\
+		insert into Person(\
+			PersonID,\
+			First_Name,\
+            Last_Name,\
+            English_Name,\
+            Gender,\
+            Date_of_Birth,\
+            Country_of_Birth,\
+            Province_of_Birth,\
+            Citizenship,\
+            Tax_Status,\
+            Live_in_Canada_Since,\
+            Marital_Status,\
+            Cellphone,\
+            Email,\
+            Bankruptcy,\
+            Discharge_Date) \
+		values(\
+			_PersonID,\
+            _First_Name,\
+            _Last_Name,\
+            _English_Name,\
+            _Gender,\
+            _Date_of_Birth,\
+            _Country_of_Birth,\
+            _Province_of_Birth,\
+            _Citizenship,\
+            _Tax_Status,\
+            _Live_in_Canada_Since,\
+            _Marital_Status,\
+            _Cellphone,\
+            _Email,\
+            _Bankruptcy,\
+            _Discharge_Date);\
+	  if @@error_count > 0 then\
+		set _ErrorCode = 1;\
+      end if;\
+      set _existing_PersonID = _PersonID;\
+      set _result = CONCAT("This record: ", _First_Name, " ", _Last_Name, " has been inserted into the datebase with PersonID of ", _existing_PersonID);\
+     \
+   end if;\
+   \
+select _result, _existing_PersonID, _ErrorCode;\
+COMMIT;\
+END\
+\
+\
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_Applicant`(\
+		in _PersonID varchar(30),\
+        in _First_Name varchar(30),\
+		in _Last_Name varchar(30),\
+		in _English_Name varchar(30),\
+        in _Gender varchar(10),\
+		in _Date_of_Birth date,\
+		in _Country_of_Birth varchar(20),\
+		in _Province_of_Birth  varchar(15),\
+		in _Citizenship  varchar(20),\
+		in _Tax_Status varchar(15),\
+		in _Live_in_Canada_Since date,\
+		in _Marital_Status  varchar(10),\
+		in _Cellphone  varchar(30),\
+		in _Email  varchar(50),\
+		in _Bankruptcy tinyint,\
+		in _Discharge_Date Date\
+        )\
+BEGIN\
+	declare totalCount int default 0;\
+    declare _result varchar(500);\
+    declare _existing_PersonID varchar(30);\
+    declare _ErrorCode int default 0;\
+	\
+    DECLARE exit handler FOR SQLEXCEPTION\
+	BEGIN\
+	ROLLBACK;\
+	set _result= 'DB Error', _existing_PersonID=null, _ErrorCode=99;\
+	END;\
+        \
+    START TRANSACTION;\
+\
+    SELECT COALESCE( COUNT(*), 0), PersonID INTO totalCount, _existing_PersonID FROM Person WHERE\
+		First_Name = _First_Name AND Last_Name = _Last_Name group by PersonID;\
+	if totalCount = 1 then \
+		update Person\
+			set \
+				English_Name = _English_Name,\
+				Gender = _Gender,\
+				Date_of_Birth = _Date_of_Birth,\
+				Country_of_Birth = _Country_of_Birth,\
+				Province_of_Birth = _Province_of_Birth,\
+				Citizenship = _Citizenship,\
+				Tax_Status = _Tax_Status,\
+				Live_in_Canada_Since = _Live_in_Canada_Since,\
+				Marital_Status = _Marital_Status,\
+				Cellphone = _Cellphone,\
+				Email = _Email,\
+				Bankruptcy = _Bankruptcy,\
+				Discharge_Date = _Discharge_Date\
+            where PersonID = _PersonID;\
+        if @@error_count > 0 then\
+			set _ErrorCode = 2;\
+		end if;\
+          \
+		set _result = CONCAT("This record: ", _First_Name, " ", _Last_Name, " is in the datebase already with the PersonID of ", _existing_PersonID);\
+	elseif totalCount = 0 then\
+		insert into Person(\
+			PersonID,\
+			First_Name,\
+            Last_Name,\
+            English_Name,\
+            Gender,\
+            Date_of_Birth,\
+            Country_of_Birth,\
+            Province_of_Birth,\
+            Citizenship,\
+            Tax_Status,\
+            Live_in_Canada_Since,\
+            Marital_Status,\
+            Cellphone,\
+            Email,\
+            Bankruptcy,\
+            Discharge_Date) \
+		values(\
+			_PersonID,\
+            _First_Name,\
+            _Last_Name,\
+            _English_Name,\
+            _Gender,\
+            _Date_of_Birth,\
+            _Country_of_Birth,\
+            _Province_of_Birth,\
+            _Citizenship,\
+            _Tax_Status,\
+            _Live_in_Canada_Since,\
+            _Marital_Status,\
+            _Cellphone,\
+            _Email,\
+            _Bankruptcy,\
+            _Discharge_Date);\
+	  if @@error_count > 0 then\
+		set _ErrorCode = 1;\
+      end if;\
+      set _existing_PersonID = _PersonID;\
+      set _result = CONCAT("This record: ", _First_Name, " ", _Last_Name, " has been inserted into the datebase with PersonID of ", _existing_PersonID);\
+     \
+   end if;\
+   \
+select _result, _existing_PersonID, _ErrorCode;\
+COMMIT;\
+END\
+\
+\
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_Asset`(\
+		in _PersonID varchar(30),\
+		in _Assets_Type varchar(50),\
+		in _Market_Value double,\
+		in _Institution varchar(50),\
+		in _Address varchar(200),\
+		in _Verify_Date DATE,\
+		in _Notes varchar(255)\
+        )\
+BEGIN\
+	declare totalCount int default 0;\
+    declare _result varchar(500);\
+    declare _ErrorCode int default 0;\
+    declare _existing_Address_ID varchar(20) default null;\
+    \
+	if _Address is not Null then\
+		SELECT COALESCE(COUNT(*),0), COALESCE(Address_ID,0) INTO totalCount, _existing_Address_ID FROM Lookup_Address Where COALESCE(Full_address,'') = _Address group by Address_ID;\
+        if totalCount = 0 then\
+			insert into Lookup_Address(\
+			Full_Address) \
+		values(\
+			_Address);\
+			if @@error_count > 0 then\
+				set _ErrorCode = 1;\
+			end if;\
+            set _existing_Address_ID = last_insert_ID();\
+		end if;\
+	end if;\
+    SELECT COALESCE(COUNT(*),0) INTO totalCount FROM Assets WHERE\
+		PersonID = _PersonID AND \
+        COALESCE( Assets_Type, '') = COALESCE( _Assets_Type, '') AND \
+        COALESCE( Address_ID, '') = COALESCE( _existing_Address_ID, '');\
+	if COALESCE(totalCount,0) <> 0 then \
+		set _result = CONCAT("This asset is in the datebase already");\
+	else\
+		insert into Assets(\
+			PersonID,\
+			Assets_Type,\
+			Market_Value,\
+			Institution,\
+			Address_ID,\
+			Verify_Date,\
+			Notes \
+) \
+		values(\
+			_PersonID,\
+			_Assets_Type,\
+			_Market_Value,\
+			_Institution,\
+			_existing_Address_ID,\
+			_Verify_Date,\
+			_Notes);\
+	  if @@error_count > 0 then\
+		set _ErrorCode = 2;\
+      end if;\
+      \
+      set _result = "Added one asset";\
+   end if;\
+select _result, _ErrorCode;\
+    \
+END\
+\
+\
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_Beneficiary`(\
+		in _PersonID varchar(30),\
+        in _First_Name varchar(30),\
+		in _Last_Name varchar(30),\
+		in _Gender varchar(10),\
+		in _Date_of_Birth date\
+        )\
+BEGIN\
+	declare totalCount int default 0;\
+    declare _result varchar(500);\
+	declare _existing_PersonID varchar(30);\
+    declare _ErrorCode int default 0;\
+\
+	DECLARE exit handler FOR SQLEXCEPTION\
+	BEGIN\
+	ROLLBACK;\
+	set _result= 'DB Error', _existing_PersonID=null, _ErrorCode=99;\
+	END;\
+        \
+    START TRANSACTION;\
+    SELECT COALESCE( COUNT(*), 0), PersonID INTO totalCount, _existing_PersonID FROM Person WHERE\
+		First_Name = _First_Name AND Last_Name = _Last_Name group by PersonID;\
+	if totalCount = 1 then \
+		update Person\
+			set Date_of_Birth = _Date_of_Birth, Gender = _Gender\
+            where PersonID = _PersonID;\
+        if @@error_count > 0 then\
+			set _ErrorCode = 2;\
+		end if;\
+          \
+		set _result = CONCAT("This record: ", _First_Name, " ", _Last_Name, " is in the datebase already with the PersonID of ", _existing_PersonID);\
+	elseif totalCount = 0 then\
+		insert into Person(\
+			PersonID,\
+            First_Name,\
+            Last_Name,\
+            Date_of_Birth,\
+            Gender\
+            ) \
+		values(\
+			_PersonID,\
+            _First_Name,\
+            _Last_Name,\
+            _Date_of_Birth,\
+            _Gender\
+            );\
+		if @@error_count > 0 then\
+			set _ErrorCode = 1;\
+		end if;\
+		\
+        set _existing_PersonID = _PersonID;\
+        set _result = CONCAT("This record: ", _First_Name, " ", _Last_Name, " has been inserted into the datebase with PersonID of ", _existing_PersonID);\
+	else\
+		set _result = CONCAT("There are more than 1 record with the name of: ", _First_Name, " ", _Last_Name, " no record has been inserted");\
+    end if;\
+	select _result, _existing_PersonID, _ErrorCode;\
+Commit;\
+END\
+\
+\
+\
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_Employment`(\
+		in _PersonID varchar(30),\
+		in _Employment_Status varchar(50),\
+		in _Employer varchar(100),\
+		in _Industry varchar(100),\
+		in _Occupation varchar(100),\
+		in _Unit varchar(20),\
+		in _Street_No varchar(20),\
+		in _Street_Name varchar(100),\
+		in _City varchar(50),\
+		in _Province varchar(50),\
+		in _Country varchar(50),\
+		in _Postcode varchar(20),\
+		in _Workphone varchar(20),\
+		in _Annual_Income double,\
+		in _Start_Date DATE,\
+		in _End_Date DATE,\
+		in _Current_Flag BOOLEAN,\
+		in _Verify_Date DATE,\
+		in _Notes varchar(255)\
+        )\
+BEGIN\
+	declare totalCount int default 0;\
+    declare _result varchar(500);\
+    declare _ErrorCode int default 0;\
+\
+    SELECT COALESCE( COUNT(*), 0) INTO totalCount FROM Employment WHERE\
+		PersonID = _PersonID AND Employer = _Employer;\
+	if totalCount = 0 then \
+		insert into Employment(\
+			PersonID,\
+			Employment_Status,\
+			Employer,\
+			Industry,\
+			Occupation,\
+			Unit,\
+			Street_No,\
+			Street_Name,\
+			City,\
+			Province,\
+			Country,\
+			Postcode,\
+			Workphone,\
+			Annual_Income,\
+			Start_Date,\
+			End_Date,\
+			Current_Flag,\
+			Verify_Date,\
+			Notes\
+			)\
+		values(\
+			_PersonID,\
+			_Employment_Status,\
+			_Employer,\
+			_Industry,\
+			_Occupation,\
+			_Unit,\
+			_Street_No,\
+			_Street_Name,\
+			_City,\
+			_Province,\
+			_Country,\
+			_Postcode,\
+			_Workphone,\
+			_Annual_Income,\
+			_Start_Date,\
+			_End_Date,\
+			_Current_Flag,\
+			_verify_Date,\
+			_Notes);\
+	  if @@error_count > 0 then\
+		set _ErrorCode = 1;\
+      end if;\
+      \
+      set _PersonID = last_insert_ID();\
+      set _result = CONCAT("Added one Employment");\
+	else\
+		set _result = CONCAT("This Employment record is in the datebase already");\
+        \
+   end if;\
+select _result, _ErrorCode;\
+END\
+\
+\
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_ID`(\
+		in _PersonID varchar(30),\
+		in _ID_Type varchar(50),\
+		in _ID_Number varchar(50),\
+		in _Issue_Date DATE,\
+		in _Expiry_Date DATE,\
+		in _Issue_Country varchar(50),\
+		in _Issue_Province varchar(50),\
+		in _Current_Flag BOOLEAN,\
+		in _Verify_Date DATE,\
+		in _Notes varchar(255)\
+        )\
+BEGIN\
+	declare totalCount int default 0;\
+    declare _result varchar(500);\
+    declare _ErrorCode int default 0;\
+    \
+\
+    SELECT COUNT(*) INTO totalCount FROM ID WHERE\
+        COALESCE( ID_Number, '') = COALESCE( _ID_Number, '');\
+	if COALESCE(totalCount,0) <> 0 then \
+		set _result = CONCAT("The ID of: ", _ID_Type, " ", _ID_Number, " is in the datebase already");\
+	else\
+		insert into ID(\
+			PersonID,\
+			ID_Type,\
+			ID_Number,\
+			Issue_Date,\
+			Expiry_Date,\
+			Issue_Country,\
+			Issue_Province,\
+			Current_Flag,\
+			Verify_Date,\
+			Notes) \
+		values(\
+			_PersonID,\
+			_ID_Type,\
+			_ID_Number,\
+			_Issue_Date,\
+			_Expiry_Date,\
+			_Issue_Country,\
+			_Issue_Province,\
+			_Current_Flag,\
+			_Verify_Date,\
+			_Notes);\
+	  if @@error_count > 0 then\
+		set _ErrorCode = 1;\
+      end if;\
+      \
+      set _result = "Added one ID";\
+   end if;\
+select _result, _ErrorCode;\
+END\
+\
+\
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_Liability`(\
+		in _PersonID varchar(30),\
+		in _L_Type varchar(50),\
+		in _L_Balance double,\
+		in _L_Monthly_Payment double,\
+		in _Institution varchar(50),\
+		in _Address varchar(200),\
+		in _Verify_Date DATE,\
+		in _Notes varchar(255)\
+        )\
+BEGIN\
+	declare totalCount int default 0;\
+    declare _result varchar(500);\
+    declare _ErrorCode int default 0;\
+    declare _existing_Address_ID varchar(20) default null;\
+    \
+	if _Address is not Null then\
+		SELECT COALESCE(COUNT(*),0), COALESCE(Address_ID,0) INTO totalCount, _existing_Address_ID FROM Lookup_Address Where COALESCE(Full_address,'') = _Address group by Address_ID;\
+	end if;\
+    SELECT COALESCE(COUNT(*),0) INTO totalCount FROM Liabilities WHERE\
+		PersonID = _PersonID AND \
+        COALESCE( L_Type, '') = COALESCE( _L_Type, '') AND \
+        COALESCE( Address_ID, '') = COALESCE( _existing_Address_ID, '');\
+	if COALESCE(totalCount,0) <> 0 then \
+		set _result = CONCAT("This Liability is in the datebase already");\
+	else\
+		insert into Liabilities(\
+			PersonID,\
+			L_Type,\
+			L_Balance,\
+			L_Monthly_Payment,\
+			Institution,\
+			Address_ID,\
+			Verify_Date,\
+			Notes \
+) \
+		values(\
+			_PersonID,\
+			_L_Type,\
+			_L_Balance,\
+			_L_Monthly_Payment,\
+			_Institution,\
+			_existing_Address_ID,\
+			_Verify_Date,\
+			_Notes);\
+	  if @@error_count > 0 then\
+		set _ErrorCode = 2;\
+      end if;\
+      \
+      set _result = "Added one Liability";\
+   end if;\
+select _result, _ErrorCode;\
+    \
+END\
+\
+\
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_Spouse`(\
+		in _PersonID varchar(30),\
+		in _First_Name varchar(30),\
+		in _Last_Name varchar(30),\
+		in _Date_of_Birth date\
+		)\
+BEGIN\
+	declare totalCount int default 0;\
+    declare _result varchar(500);\
+    declare _existing_PersonID varchar(30);\
+    declare _ErrorCode int default 0;\
+	\
+    DECLARE exit handler FOR SQLEXCEPTION\
+	BEGIN\
+	ROLLBACK;\
+	set _result= 'DB Error', _existing_PersonID=null, _ErrorCode=99;\
+	END;\
+        \
+    START TRANSACTION;\
+    SELECT COALESCE( COUNT(*), 0), PersonID INTO totalCount, _existing_PersonID FROM Person WHERE\
+		First_Name = _First_Name AND Last_Name = _Last_Name group by PersonID;\
+	if totalCount = 1 then \
+		update Person\
+			set Date_of_Birth = _Date_of_Birth\
+            where PersonID = _PersonID;\
+        if @@error_count > 0 then\
+			set _ErrorCode = 2;\
+		end if;\
+          \
+		set _result = CONCAT("This record: ", _First_Name, " ", _Last_Name, " is in the datebase already with the PersonID of ", _PersonID);\
+	elseif totalCount = 0 then\
+		insert into Person(\
+			PersonID,\
+			First_Name,\
+            Last_Name,\
+            Date_of_Birth\
+            ) \
+		values(\
+			_PersonID,\
+            _First_Name,\
+            _Last_Name,\
+            _Date_of_Birth\
+            );\
+		if @@error_count > 0 then\
+			set _ErrorCode = 1;\
+		end if;\
+		\
+        set _existing_PersonID = _PersonID;\
+		set _result = CONCAT("This record: ", _First_Name, " ", _Last_Name, " has been inserted into the datebase with PersonID of ", _PersonID);\
+	else\
+		set _result = CONCAT("There are more than 1 record with the name of: ", _First_Name, " ", _Last_Name, " no record has been inserted");\
+    end if;\
+	select _result, _existing_PersonID, _ErrorCode;\
+Commit;\
+END\
+\
+\
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_Trustee`(\
+		in _PersonID varchar(30),\
+        in _First_Name varchar(30),\
+		in _Last_Name varchar(30)\
+        )\
+BEGIN\
+	declare totalCount int default 0;\
+    declare _result varchar(500);\
+    declare _existing_PersonID varchar(30);\
+    declare _ErrorCode int default 0;\
+	declare _Current_timestamp varchar(20);\
+    \
+    DECLARE exit handler FOR SQLEXCEPTION\
+	BEGIN\
+	ROLLBACK;\
+	set _result= 'DB Error', _existing_PersonID=null, _ErrorCode=99;\
+	END;\
+        \
+    START TRANSACTION;SELECT COALESCE( COUNT(*), 0), PersonID INTO totalCount, _existing_PersonID FROM Person WHERE\
+		First_Name = _First_Name\
+        AND Last_Name = _Last_Name group by PersonID;\
+	if totalCount <> 0  then \
+		set _result = CONCAT("This record: ", _First_Name, " ", _Last_Name, " is in the datebase already with the PersonID of ", _existing_PersonID);\
+	else\
+		insert into Person(\
+			PersonID,\
+			First_Name,\
+            Last_Name)\
+		values(\
+			_PersonID,\
+			_First_Name,\
+            _Last_Name);\
+	  if @@error_count > 0 then\
+		set _ErrorCode = 1;\
+	end if;\
+      \
+	set _existing_PersonID = _PersonID;\
+	set _result = CONCAT("This record: ", _First_Name, " ", _Last_Name, " has been inserted into the datebase with PersonID of ", _existing_PersonID);\
+   end if;\
+select _result, _existing_PersonID, _ErrorCode;\
+Commit;\
+END\
+}
