@@ -6,107 +6,76 @@
 \deftab720
 \pard\pardeftab720\partightenfactor0
 
-\f0\fs22 \cf2 \up0 \nosupersub \ulnone CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_Applicant`(\
+\f0\fs22 \cf2 \up0 \nosupersub \ulnone CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_Address`(\
 		in _PersonID varchar(30),\
-        in _First_Name varchar(30),\
-		in _Last_Name varchar(30),\
-		in _English_Name varchar(30),\
-        in _Gender varchar(10),\
-		in _Date_of_Birth date,\
-		in _Country_of_Birth varchar(20),\
-		in _Province_of_Birth  varchar(15),\
-		in _Citizenship  varchar(20),\
-		in _Tax_Status varchar(15),\
-		in _Live_in_Canada_Since date,\
-		in _Marital_Status  varchar(10),\
-		in _Cellphone  varchar(30),\
-		in _Email  varchar(50),\
-		in _Bankruptcy tinyint,\
-		in _Discharge_Date Date\
+		in _Apt_No varchar(20),\
+		in _Street_No varchar(20),\
+        in _Street_Name varchar(100),\
+		in _City varchar(50),\
+		in _Province varchar(50),\
+		in _Country varchar(50),\
+		in _Postcode varchar(20),\
+		in _Homephone varchar(20),\
+		in _Living_Status varchar(50),\
+		in _Start_Date DATE,\
+		in _End_Date DATE,\
+		in _Current_Flag tinyint,\
+		in _Verify_Date DATE,\
+        in _Notes varchar(255)\
         )\
 BEGIN\
 	declare totalCount int default 0;\
     declare _result varchar(500);\
-    declare _existing_PersonID varchar(30);\
     declare _ErrorCode int default 0;\
-	\
-    DECLARE exit handler FOR SQLEXCEPTION\
-	BEGIN\
-	ROLLBACK;\
-	set _result= 'DB Error', _existing_PersonID=null, _ErrorCode=99;\
-	END;\
-        \
-    START TRANSACTION;\
+    \
 \
-    SELECT COALESCE( COUNT(*), 0), PersonID INTO totalCount, _existing_PersonID FROM Person WHERE\
-		First_Name = _First_Name AND Last_Name = _Last_Name group by PersonID;\
-	if totalCount = 1 then \
-		update Person\
-			set \
-				English_Name = _English_Name,\
-				Gender = _Gender,\
-				Date_of_Birth = _Date_of_Birth,\
-				Country_of_Birth = _Country_of_Birth,\
-				Province_of_Birth = _Province_of_Birth,\
-				Citizenship = _Citizenship,\
-				Tax_Status = _Tax_Status,\
-				Live_in_Canada_Since = _Live_in_Canada_Since,\
-				Marital_Status = _Marital_Status,\
-				Cellphone = _Cellphone,\
-				Email = _Email,\
-				Bankruptcy = _Bankruptcy,\
-				Discharge_Date = _Discharge_Date\
-            where PersonID = _PersonID;\
-        if @@error_count > 0 then\
-			set _ErrorCode = 2;\
-		end if;\
-          \
-		set _result = CONCAT("This record: ", _First_Name, " ", _Last_Name, " is in the datebase already with the PersonID of ", _existing_PersonID);\
-	elseif totalCount = 0 then\
-		insert into Person(\
+    SELECT COUNT(*) INTO totalCount FROM Address WHERE\
+		PersonID = _PersonID AND \
+        COALESCE( Apt_No, '') = COALESCE( _Apt_No, '') AND \
+        Street_No = _Street_No AND\
+        Street_Name = _Street_Name;\
+	if COALESCE(totalCount,0) <> 0 then \
+		set _result = CONCAT("The address of: ", COALESCE(_Apt_No,''), " ", _Street_No, " ", _Street_Name, " is in the datebase already");\
+	else\
+		insert into Address(\
 			PersonID,\
-			First_Name,\
-            Last_Name,\
-            English_Name,\
-            Gender,\
-            Date_of_Birth,\
-            Country_of_Birth,\
-            Province_of_Birth,\
-            Citizenship,\
-            Tax_Status,\
-            Live_in_Canada_Since,\
-            Marital_Status,\
-            Cellphone,\
-            Email,\
-            Bankruptcy,\
-            Discharge_Date) \
+			Apt_No,\
+			Street_No,\
+			Street_Name,\
+			City,\
+			Province,\
+			Country,\
+			Postcode,\
+			Homephone,\
+			Living_Status,\
+			Start_Date,\
+			End_Date,\
+			Current_Flag,\
+			Verify_Date,\
+			Notes) \
 		values(\
 			_PersonID,\
-            _First_Name,\
-            _Last_Name,\
-            _English_Name,\
-            _Gender,\
-            _Date_of_Birth,\
-            _Country_of_Birth,\
-            _Province_of_Birth,\
-            _Citizenship,\
-            _Tax_Status,\
-            _Live_in_Canada_Since,\
-            _Marital_Status,\
-            _Cellphone,\
-            _Email,\
-            _Bankruptcy,\
-            _Discharge_Date);\
+			_Apt_No,\
+			_Street_No,\
+			_Street_Name,\
+			_City,\
+			_Province,\
+			_Country,\
+			_Postcode,\
+			_Homephone,\
+			_Living_Status,\
+			_Start_Date,\
+			_End_Date,\
+			_Current_Flag,\
+			_Verify_Date,\
+			_Notes);\
 	  if @@error_count > 0 then\
 		set _ErrorCode = 1;\
       end if;\
-      set _existing_PersonID = _PersonID;\
-      set _result = CONCAT("This record: ", _First_Name, " ", _Last_Name, " has been inserted into the datebase with PersonID of ", _existing_PersonID);\
-     \
+      \
+      set _result = "Added one address";\
    end if;\
-   \
-select _result, _existing_PersonID, _ErrorCode;\
-COMMIT;\
+select _result, _ErrorCode;\
 END\
 \
 \
