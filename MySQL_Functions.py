@@ -1,32 +1,33 @@
 #This module includes all functions that are related to MySQL
 
 import os
+from re import S
 import pymysql
 from google.cloud.sql.connector import connector
 import sqlalchemy
 import Class_Definition
-from Class_Definition import Person, ResponseDTO, Advisor, Address, ID, Employment, Asset, Liability
+from Class_Definition import Beneficiary, Person, ResponseDTO, Advisor, Address, ID, Employment, Asset, Liability, Spouse, Trustee
 
 
     
 class DBBase(object):
     """description of class"""
     def __init__(self):
-        self.__Database = "localhost"
+        self.__Database = "cloud"
         if self.__Database == "cloud":
-            os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "ai-financial-coop202112-6120926f2230.json"
+            os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "atomic-producer-342016-6c7dfb4be3fc.json"
             self.__Pool = sqlalchemy.create_engine("mysql+pymysql://", creator = self.__getconn,)
         else:
-            self.__Pool = sqlalchemy.create_engine("mysql+pymysql://root:xieli3015@127.0.0.1:3306/aif_db")
+            self.__Pool = sqlalchemy.create_engine("mysql+pymysql://root:xieli3015@127.0.0.1:3306/aif_db_duplicate")
 
 
     def __getconn(self) -> pymysql.connections.Connection:
         # Set MySQL connection info
-        _MySQL_connectionName = 'ai-financial-coop202112:us-central1:hengyi'
-        _MySQL_host = '35.225.4.226'
-        _MySQL_user = 'AIF0013'
-        _MySQL_password = 'LiXie-AIF'
-        _MySQL_database = 'aif_db_AIF0013'
+        _MySQL_connectionName = 'atomic-producer-342016:northamerica-northeast2:aif'
+        _MySQL_host = '34.130.217.109'
+        _MySQL_user = 'xieli'
+        _MySQL_password = 'aifinancial'
+        _MySQL_database = 'aif_db_duplicate'
 
         conn : pymysql.connections.Connection = connector.connect(
             _MySQL_connectionName,
@@ -34,8 +35,6 @@ class DBBase(object):
             user= _MySQL_user,
             password = _MySQL_password,
             db = _MySQL_database,
-            #cafile=MySQL_SSLPath,
-            #validate_host=False,
         )
         return conn
 
@@ -61,9 +60,21 @@ class AIFinanceDB(DBBase):
                     :Live_in_Canada_Since,
                     :Marital_Status,
                     :Cellphone,
-                    :Email,
-                    :Bankruptcy,
-                    :Discharge_Date)""",)
+                    :Homephone,
+			        :Workphone,
+			        :SIN,
+			        :Email,
+			        :Postcode,
+			        :PersonType,
+			        :Bankruptcy,
+                    :Discharge_Date,
+                    :AdvisorPID,
+			        :Start_date,
+			        :End_date,
+			        :Current_Flag,
+			        :Verify_date,
+			        :Notes)""",)
+
 
                 result = db_conn.execute(SQL_Proc_text,
                     Person_ID = p.PersonID,
@@ -79,11 +90,21 @@ class AIFinanceDB(DBBase):
                     Live_in_Canada_Since = p.Live_in_Canada_Since,
                     Marital_Status = p.Marital_Status,
                     Cellphone = p.Cellphone,
-                    Email = p.Email,
-                    Bankruptcy = p.Bankruptcy,
-                    Discharge_Date = p.Discharge_Date).fetchone()
+                    Homephone = p.Homephone,
+			        Workphone = p.Workphone,
+			        SIN = p.SIN,
+			        Email = p.Email,
+                    Postcode = p.Postcode,
+			        PersonType = p.PersonType,
+			        Bankruptcy = p.Bankruptcy,
+                    Discharge_Date = p.Discharge_Date,
+                    AdvisorPID = p.AdvisorPID,
+			        Start_date = p.Start_date,
+			        End_date = p.End_date,
+			        Current_Flag = p.Current_Flag,
+			        Verify_date = p.Verify_date,
+			        Notes = p.Notes).fetchone()
             
-                
                 p.PersonID = result[1]
                 _resp.ErrorMsg = result[0]
                 _resp.ErrorCode = result[2]
@@ -92,22 +113,27 @@ class AIFinanceDB(DBBase):
             _resp.ErrorMsg = e
         return _resp
 
-    def SaveTrustee(self, p: Person) -> ResponseDTO:
+    def SaveTrustee(self, t: Trustee) -> ResponseDTO:
         _resp = ResponseDTO()
         try:
             with self._DBBase__Pool.connect().execution_options(autocommit=True) as db_conn:
                 SQL_Proc_text = sqlalchemy.text(
                     """call Save_Trustee(
+                    :Applicant_PID,
                     :Person_ID,
                     :First_Name,
-                    :Last_Name)""",)
+                    :Last_Name,
+                    :T_Relationship,
+                    :AdvisorPID)""",)
 
                 result = db_conn.execute(SQL_Proc_text,
-                    Person_ID = p.PersonID,
-                    First_Name = p.First_Name,
-                    Last_Name = p.Last_Name).fetchone()
-            
-                p.PersonID = result[1]
+                    Applicant_PID = t.Applicant_PID,
+                    Person_ID = t.PersonID,
+                    First_Name = t.First_Name,
+                    Last_Name = t.Last_Name,
+                    T_Relationship = t.T_Relationship,
+                    AdvisorPID =t.AdvisorPID).fetchone()
+                
                 _resp.ErrorMsg = result[0]
                 _resp.ErrorCode = result[2]
         except Exception as e:
@@ -115,24 +141,28 @@ class AIFinanceDB(DBBase):
             _resp.ErrorMsg=e
         return _resp    
         
-    def SaveSpouse(self, p: Person) -> ResponseDTO:
+    def SaveSpouse(self, s: Spouse) -> ResponseDTO:
         _resp = ResponseDTO()
         try:
             with self._DBBase__Pool.connect().execution_options(autocommit=True) as db_conn:
                 SQL_Proc_text = sqlalchemy.text(
                     """call Save_Spouse(
+                    :Applicant_PID,
                     :Person_ID,
                     :First_Name,
                     :Last_Name,
-                    :Date_of_Birth)""",)
+                    :Date_of_Birth,
+                    :AdvisorPID)""",)
 
                 result = db_conn.execute(SQL_Proc_text,
-                    Person_ID = p.PersonID,
-                    First_Name = p.First_Name,
-                    Last_Name = p.Last_Name,
-                    Date_of_Birth = p.Date_of_Birth).fetchone()
+                    Applicant_PID = s.Applicant_PID,
+                    Person_ID = s.PersonID,
+                    First_Name = s.First_Name,
+                    Last_Name = s.Last_Name,
+                    Date_of_Birth = s.Date_of_Birth,
+                    AdvisorPID = s.AdvisorPID).fetchone()
             
-                p.PersonID = result[1]
+                s.PersonID = result[1]
                 _resp.ErrorMsg = result[0]
                 _resp.ErrorCode = result[2]
         except Exception as e:
@@ -140,26 +170,32 @@ class AIFinanceDB(DBBase):
             _resp.ErrorMsg=e
         return _resp    
         
-    def SaveBeneficiary(self, p: Person) -> ResponseDTO:
+    def SaveBeneficiary(self, b: Beneficiary) -> ResponseDTO:
         _resp = ResponseDTO()
         try:
             with self._DBBase__Pool.connect().execution_options(autocommit=True) as db_conn:
                 SQL_Proc_text = sqlalchemy.text(
                     """call Save_Beneficiary(
+                    :Applicant_PID,
                     :Person_ID,
                     :First_Name,
                     :Last_Name,
+                    :Relationship,
                     :Gender,
-                    :Date_of_Birth)""",)
+                    :Date_of_Birth,
+                    :AdvisorPID)""",)
 
                 result = db_conn.execute(SQL_Proc_text,
-                    Person_ID = p.PersonID,
-                    First_Name = p.First_Name,
-                    Last_Name = p.Last_Name,
-                    Gender = p.Gender,
-                    Date_of_Birth = p.Date_of_Birth).fetchone()
+                    Applicant_PID = b.Applicant_PID,
+                    Person_ID = b.PersonID,
+                    First_Name = b.First_Name,
+                    Last_Name = b.Last_Name,
+                    Relationship = b.B_Relationship,
+                    Gender = b.Gender,
+                    Date_of_Birth = b.Date_of_Birth,
+                    AdvisorPID = b.AdvisorPID).fetchone()
             
-                p.PersonID = result[1]
+                b.PersonID = result[1]
                 _resp.ErrorMsg = result[0]
                 _resp.ErrorCode = result[2]
         except Exception as e:
@@ -181,7 +217,6 @@ class AIFinanceDB(DBBase):
                         :Province,
                         :Country,
                         :Postcode,
-                        :Homephone,
                         :Living_Status,
                         :Start_Date,
                         :End_Date,
@@ -198,7 +233,6 @@ class AIFinanceDB(DBBase):
                     Province = a.Province,
                     Country = a.Country,
                     Postcode = a.Postcode,
-                    Homephone = a.Homephone,
                     Living_Status = a.Living_Status,
                     Start_Date = a.Start_Date,
                     End_Date = a.End_Date,
@@ -226,6 +260,8 @@ class AIFinanceDB(DBBase):
                         :Expiry_Date,
                         :Issue_Country,
                         :Issue_Province,
+                        :Start_Date,
+                        :End_Date,
                         :Current_Flag,
                         :Verify_Date,
                         :Notes)""",)
@@ -238,6 +274,8 @@ class AIFinanceDB(DBBase):
                     Expiry_Date = i.Expiry_Date,
                     Issue_Country = i.Issue_Country,
                     Issue_Province = i.Issue_Province,
+                    Start_Date = i.Start_Date,
+                    End_Date = i.End_Date,
                     Current_Flag = i.Current_Flag,
                     Verify_Date = i.Verify_Date,
                     Notes = i.Notes).fetchone()
@@ -262,6 +300,7 @@ class AIFinanceDB(DBBase):
                         :Employer,
                         :Industry,
                         :Occupation,
+                        :Income,
                         :Unit,
                         :Street_No,
                         :Street_Name,
@@ -270,7 +309,6 @@ class AIFinanceDB(DBBase):
                         :Country,
                         :Postcode,
                         :Workphone,
-                        :Annual_Income,
                         :Start_Date,
                         :End_Date,
                         :Current_Flag,
@@ -291,7 +329,7 @@ class AIFinanceDB(DBBase):
                     Country = E.Country,
                     Postcode = E.Postcode,
                     Workphone = E.Workphone,
-                    Annual_Income = E.Annual_Income,
+                    Income = E.Income,
                     Start_Date = E.Start_Date,
                     End_Date = E.End_Date,
                     Current_Flag = E.Current_Flag,
@@ -318,7 +356,8 @@ class AIFinanceDB(DBBase):
                         :Assets_Type,
                         :Market_Value,
                         :Institution,
-                        :Address,
+                        :A_Address,
+                        :Current_Flag,
                         :Verify_Date,
                         :Notes)""",)
 
@@ -327,7 +366,8 @@ class AIFinanceDB(DBBase):
                         Assets_Type = ass.Assets_Type,
                         Market_Value = ass.Market_Value,
                         Institution = ass.Institution,
-                        Address = ass.Address,
+                        A_Address = ass.Address,
+                        Current_Flag = 1,
                         Verify_Date = ass.Verify_Date,
                         Notes = ass.Notes).fetchone()
                 
@@ -352,6 +392,7 @@ class AIFinanceDB(DBBase):
                         :L_Monthly_Payment,
                         :Institution,
                         :Address,
+                        :Current_Flag,
                         :Verify_Date,
                         :Notes)""",)
 
@@ -362,6 +403,7 @@ class AIFinanceDB(DBBase):
                         L_Monthly_Payment=liab.L_Monthly_Payment,
                         Institution = liab.Institution,
                         Address = liab.Address,
+                        Current_Flag = liab.Current_Flag,
                         Verify_Date = liab.Verify_Date,
                         Notes = liab.Notes).fetchone()
                 

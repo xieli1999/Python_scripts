@@ -1,28 +1,39 @@
 # define a class person
 
 class Person:
-    PersonID=""
-    First_Name=""
-    Last_Name=""
-    English_Name=""
-    Gender=""
-    Date_of_Birth=None
-    Country_of_Birth=""
-    Province_of_Birth=""
-    Citizenship=""
-    Tax_Status=""
-    Live_in_Canada_Since=None
-    Marital_Status=""
-    Cellphone=""
-    Email=""
-    Bankruptcy=0
-    Discharge_Date=None
-    PersonType=""
-    SIN=""
+    Applicant_PID = ""
+    PersonID = ""
+    First_Name = ""
+    Last_Name = ""
+    English_Name = ""
+    Gender = ""
+    Date_of_Birth = None
+    Country_of_Birth = ""
+    Province_of_Birth = ""
+    Citizenship = ""
+    Tax_Status = ""
+    Live_in_Canada_Since = None
+    Marital_Status = ""
+    Cellphone = ""
+    Homephone = ""
+    Workphone = ""
+    SIN = ""
+    Email = ""
+    Postcode = ""
+    PersonType = ""
+    Bankruptcy = 0
+    Discharge_Date = None
+    AdvisorPID = ""
+    Start_date = None
+    End_date = None
+    Current_Flag = 0
+    Verify_date = None
+    Notes = ""
         
     @classmethod
     def New_person(
         cls, 
+        Applicant_PID,
         PersonID,
         First_Name,
         Last_Name,
@@ -36,31 +47,50 @@ class Person:
         Live_in_Canada_Since,
         Marital_Status,
         Cellphone,
+        Homephone,
+        Workphone,
+        SIN,
         Email,
+        Postcode,
+        PersonType,
         Bankruptcy,
         Discharge_Date,
-        PersonType,
-        SIN):
+        AdvisorPID,
+        Start_date,
+        End_date,
+        Current_Flag,
+        Verify_date,
+        Notes):
         
         p=cls()
-        p.PersonID=PersonID
-        p.First_Name=First_Name
-        p.Last_Name=Last_Name
-        p.English_Name=English_Name
-        p.Gender=Gender
-        p.Date_of_Birth=Date_of_Birth
-        p.Country_of_Birth=Country_of_Birth
-        p.Province_of_Birth=Province_of_Birth
-        p.Citizenship=Citizenship
-        p.Tax_Status=Tax_Status
-        p.Live_in_Canada_Since=Live_in_Canada_Since
-        p.Marital_Status=Marital_Status
-        p.Cellphone=Cellphone
-        p.Email=Email
-        p.Bankruptcy=Bankruptcy
-        p.Discharge_Date=Discharge_Date
-        p.PersonType=PersonType
-        p.SIN=SIN
+        p.Applicant_PID = Applicant_PID
+        p.PersonID = PersonID
+        p.First_Name = First_Name
+        p.Last_Name = Last_Name
+        p.English_Name = English_Name
+        p.Gender = Gender
+        p.Date_of_Birth = Date_of_Birth
+        p.Country_of_Birth = Country_of_Birth
+        p.Province_of_Birth = Province_of_Birth
+        p.Citizenship = Citizenship
+        p.Tax_Status = Tax_Status
+        p.Live_in_Canada_Since = Live_in_Canada_Since
+        p.Marital_Status = Marital_Status
+        p.Cellphone = Cellphone
+        p.Homephone = Homephone
+        p.Workphone = Workphone
+        p.SIN = SIN
+        p.Email = Email
+        p.Postcode = Postcode
+        p.PersonType = PersonType
+        p.Bankruptcy = Bankruptcy
+        p.Discharge_Date = Discharge_Date
+        p.AdvisorPID = AdvisorPID
+        p.Start_date = Start_date
+        p.End_date = End_date
+        p.Current_Flag = Current_Flag
+        p.Verify_date = Verify_date
+        p.Notes = Notes
         return p
   
     @property
@@ -70,22 +100,24 @@ class Person:
 # the end of Person class definition        
 
 class Beneficiary(Person):
+    Applicant_PID = ''
     AIF_Invest_No = ''
     B_Relationship = ''
     B_Percentage = 0
     Revokable = 0 
-    Trustee_PID = ''
-    T_Relationship = ''
-    Start_Date = None
-    End_Date = None
-    Current_Flag = 0
-    Verify_Date = None
-    Update_Date = None
     
 # the end of Beneficiary class definition
 
+class Spouse(Person):
+    Applicant_PID = ''
+    S_Relationship = 'Spouse'
+    
+# the end of Spouse class definition
+
 class Trustee(Person):
+    Applicant_PID = ''
     T_Relationship = ''
+
     
 # the end of Trustee class definition
 
@@ -162,6 +194,8 @@ class ID:
     Expiry_Date = None
     Issue_Country = None
     Issue_Province = None
+    Start_Date = None
+    End_Date = None
     Current_Flag = None
     Verify_Date = None
     Notes = None
@@ -201,6 +235,7 @@ class Asset:
     Market_Value = None
     Institution = None
     Address = None
+    Current_Flag = 1
     Verify_Date = None
     Notes = None
         
@@ -212,6 +247,7 @@ class Asset:
 		Market_Value,
 		Institution,
 		Address,
+        Current_Flag,
 		Verify_Date,
 		Notes):
         
@@ -221,6 +257,7 @@ class Asset:
         ass.Market_Value,
         ass.Institution,
         ass.Address,
+        ass.Current_Flag,
         ass.Verify_Date,
         ass.Notes
         return ass
@@ -234,6 +271,7 @@ class Liability:
     L_Monthly_Payment = None
     Institution = None
     Address = None
+    Current_Flag = 1
     Verify_Date = None
     Notes = None
         
@@ -246,6 +284,7 @@ class Liability:
         L_Monthly_Payment,
         Institution,
 		Address,
+        Current_Flag,
 		Verify_Date,
 		Notes):
         
@@ -256,6 +295,7 @@ class Liability:
         liab.L_Monthly_Payment,
         liab.Institution,
         liab.Address,
+        Liab.Current_Flag,
         liab.Verify_Date,
         liab.Notes
         return liab
@@ -268,6 +308,7 @@ class Employment:
     Employer = None
     Industry = None
     Occupation = None
+    Income = None
     Unit = None
     Street_No = None
     Street_Name = None
@@ -276,7 +317,6 @@ class Employment:
     Country = None
     Postcode = None
     Workphone = None
-    Annual_Income = None
     Start_Date = None
     End_Date = None
     Current_Flag = None
@@ -299,7 +339,7 @@ class Employment:
         Country,
         Postcode,
         Workphone,
-        Annual_Income,
+        Income,
         Start_Date,
         End_Date,
         Current_Flag,
@@ -320,7 +360,7 @@ class Employment:
         Country = Country,
         Postcode = Postcode,
         Workphone = Workphone,
-        Annual_Income = Annual_Income,
+        Income = Income,
         Start_Date = Start_Date,
         End_Date = End_Date,
         Current_Flag = Current_Flag,
