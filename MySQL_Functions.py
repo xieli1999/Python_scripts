@@ -6,7 +6,7 @@ import pymysql
 from google.cloud.sql.connector import connector
 import sqlalchemy
 import Class_Definition
-from Class_Definition import Beneficiary, Person, ResponseDTO, Advisor, Address, ID, Employment, Asset, Liability, Spouse, Trustee
+from Class_Definition import Beneficiary, Person, ResponseDTO, Advisor, Address, ID, Employment, Asset, Liability, Spouse, Trustee, KYC, Income
 
 
     
@@ -380,6 +380,33 @@ class AIFinanceDB(DBBase):
             return _resp
 
 
+    def SaveKYC(self, k: KYC) -> ResponseDTO:
+            _resp = ResponseDTO()
+            try:
+                with self._DBBase__Pool.connect().execution_options(autocommit=True) as db_conn:
+                    SQL_Proc_text = sqlalchemy.text(
+                        """call Save_KYC(
+                        :PersonID,
+                        :VersionNo,
+                        :Score,
+                        :Verify_Date,
+                        :Notes)""",)
+
+                    result = db_conn.execute(SQL_Proc_text,
+                        PersonID = k.PersonID,
+                        VersionNo = k.VersionNo,
+                        Score= ",".join(k.Score),
+                        Verify_Date = k.Verify_Date,
+                        Notes = k.Notes).fetchone()
+                
+                    _resp.ErrorMsg=result[0]
+                    _resp.ErrorCode=result[1]
+            except Exception as e:
+                _resp.ErrorCode=99
+                _resp.ErrorMsg=e
+            return _resp
+    
+
     def SaveLiability(self, liab: Liability) -> ResponseDTO:
             _resp = ResponseDTO()
             try:
@@ -414,3 +441,37 @@ class AIFinanceDB(DBBase):
                 _resp.ErrorCode=99
                 _resp.ErrorMsg=e
             return _resp
+
+
+    def SaveIncome(self, i: Income) -> ResponseDTO:
+            _resp = ResponseDTO()
+            try:
+                with self._DBBase__Pool.connect().execution_options(autocommit=True) as db_conn:
+                    SQL_Proc_text = sqlalchemy.text(
+                        """call Save_Income(
+                        :PersonID,
+                        :I_Type,
+                        :I_Frequency,
+                        :Income,
+                        :Start_Date,
+                        :End_Date,
+                        :Notes,
+                        :Current_Flag
+                        )""",)
+
+                    result = db_conn.execute(SQL_Proc_text,
+                        PersonID = i.PersonID,
+                        I_Type = i.I_Type,
+                        I_Frequency = i.I_Frequency,
+                        Income = i.Income,
+                        Start_Date = i.Start_Date,
+                        End_Date = i.End_Date,
+                        Notes = i.Notes,
+                        Current_Flag = i.Current_Flag).fetchone()
+                
+                    _resp.ErrorMsg=result[0]
+                    _resp.ErrorCode=result[1]
+            except Exception as e:
+                _resp.ErrorCode=99
+                _resp.ErrorMsg=e
+            return _resp        

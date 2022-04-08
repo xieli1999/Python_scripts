@@ -29,7 +29,7 @@ import Excel_Functions
 import Class_Definition
 import MySQL_Functions
 
-from Class_Definition import Asset, Spouse, Beneficiary, Employment, Liability, Person, ResponseDTO, Advisor, Trustee, Address, ID, Liability
+from Class_Definition import Asset, Spouse, Beneficiary, Employment, Liability, Person, ResponseDTO, Advisor, Trustee, Address, ID, Liability, KYC, Income
 from Excel_Functions import CN_Prov_of_birth, Validate_SIN, Date_of_Birth
 from MySQL_Functions import AIFinanceDB
 
@@ -57,7 +57,7 @@ def main_application(entries):
         Primary_applicant.PersonID = create_personID()
         Primary_applicant.First_Name = sheet['E7'].value
         Primary_applicant.Last_Name=sheet['B7'].value
-
+        
         if Primary_applicant.First_Name != None and Primary_applicant.Last_Name != None:
             Primary_applicant.English_Name=sheet['J7'].value
             Primary_applicant.Gender=sheet['B8'].value
@@ -764,11 +764,102 @@ def main_application(entries):
                             else:
                                 print ("This client has no Co_applicant but has Co_applicant's asset value" + Primary_applicant.Full_Name)
 
+                #Save Income for both primary applicant and co applicant
+                
+                for i in range(24,29):
+                    #Save Income for primary applicant
+                    if sheet.cell(row=i,column=7).value != None or sheet.cell(row=i,column=8).value != 0:
+                        new_income = Income()
+                        
+                        new_income.PersonID = Primary_applicant.PersonID
+                        new_income.I_Type = sheet.cell(row=i,column=6).value
+                        if new_income.I_Type == 'Rental':
+                            new_income.I_Frequency = 'Monthly'
+                            new_income.Income = sheet.cell(row=i,column=8).value
+                        else:
+                            new_income.I_Frequency = 'Annual'
+                            new_income.Income = sheet.cell(row=i,column=7).value
+                        new_income.notes = Primary_verification_Notes 
+                        new_income.Current_Flag = 1
+                        
+                        result=db.SaveIncome(new_income)
+                        print(result.ErrorMsg,result.Succeeded,result.ErrorCode)
+                    
+                for i in range(31,36):
+                    #Save Income for Co applicant
+                    if sheet.cell(row=i,column=7).value != None or sheet.cell(row=i,column=8).value != 0:
+                        print(sheet.cell(row=i,column=7).value)
+                        print(sheet.cell(row=i,column=8).value)
+                        new_income = Income()
+                        
+                        new_income.PersonID = Co_Applicant.PersonID
+                        new_income.I_Type = sheet.cell(row=i,column=6).value
+                        if new_income.I_Type == 'Rental':
+                            new_income.I_Frequency = 'Monthly'
+                            new_income.Income = sheet.cell(row=i,column=8).value
+                        else:
+                            new_income.I_Frequency = 'Annual'
+                            new_income.Income = sheet.cell(row=i,column=7).value
+                        new_income.notes = Co_verification_Notes
+                        new_income.Current_Flag = 1
+                        
+                        result=db.SaveIncome(new_income)
+                        print(result.ErrorMsg,result.Succeeded,result.ErrorCode)
+                        
+                        #Save TFSA, RRSP etc asset for co applicant
+                        if sheet.cell(row=i,column=3).value != None:
+                            if Co_Applicant_exist == True:
+                                new_asset = Asset()
+                                
+                                new_asset.PersonID = Co_Applicant.PersonID
+                                new_asset.Assets_Type = sheet.cell(row=i,column=1).value
+                                new_asset.Institution = sheet.cell(row=i,column=4).value
+                                new_asset.Market_Value = sheet.cell(row=i,column=3).value
+                                new_asset.Verify_Date = Co_verification_date
+                                new_asset.Notes = Co_verification_Notes
+                                
+                                
+                                result=db.SaveAsset(new_asset)
+                                print(result.ErrorMsg,result.Succeeded,result.ErrorCode)
+                            else:
+                                print ("This client has no Co_applicant but has Co_applicant's asset value" + Primary_applicant.Full_Name)
+                
+                # Save Primary applicant's KYC
+                K = KYC()
+                K.PersonID = Primary_applicant.PersonID
+                K.Verify_Date = Primary_verification_date
+                K.Notes = Primary_verification_Notes
+                sheet_iA=workbook['KYC-iA']
+                sheet_ML=workbook['KYC-ML']
+                sheet_CL=workbook['KYC-CL']
+                if sheet_iA['B4'].value != None and sheet_iA['B4']:
+                    score_cell = sheet_iA['B4':'B11'] # iA score cells
+                    K.Score = [str(score_cell[x][0].value) for x in range(len(score_cell))] 
+                    K.VersionNo = "IA_V1"
+                    result=db.SaveKYC(K)
+                    print(result.ErrorMsg,result.Succeeded,result.ErrorCode)
+                if sheet_ML['B4'].value != None and sheet_ML['B4']:
+                    score_cell = sheet_ML['B4':'B11'] # iA score cells
+                    K.Score = [str(score_cell[x][0].value) for x in range(len(score_cell))]
+                    K.VersionNo = "ML_V1"
+                    result=db.SaveKYC(K)
+                    print(result.ErrorMsg,result.Succeeded,result.ErrorCode)
+                if sheet_CL['B4'].value != None and sheet_CL['B4']:                    
+                    score_cell = sheet_CL['B4':'B21']
+                    K.Score = [str(score_cell[x][0].value) for x in range(len(score_cell))]
+                    section_subtotal = [2,6,10,15] #section subtal of CL spreadsheet
+                    for x in reversed(section_subtotal): K.Score.pop(x)
+                    K.VersionNo = "CL_V1"
+                    result=db.SaveKYC(K)
+                    print(result.ErrorMsg,result.Succeeded,result.ErrorCode)
+
+                    
+                    
+                
 
 
 
-# creat the list of PersonID
-# creat the list of PersonID
+# create the list of PersonID
 def create_personID():
     global dateTimeObj, PersonID_index
     PersonID_index += 1

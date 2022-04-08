@@ -1,5 +1,8 @@
 # define a class person
 
+from numpy import kaiser
+
+
 class Person:
     Applicant_PID = ""
     PersonID = ""
@@ -370,7 +373,65 @@ class Employment:
   
 # the end of Asset class definition
 
+class KYC:
+    PersonID = None
+    VersionNo = None
+    Score = None
+    Verify_Date = None
+    Notes = None
+        
+    @classmethod
+    def New_KYC(
+        cls,
+        PersonID,
+        VersionNo,
+        Score,
+        Verify_Date,
+        Notes):
+        k=cls()
+        k.PersonID = PersonID,
+        k.VersionNo = VersionNo,
+        k.Score = Score,
+        k.Verify_Date = Verify_Date,
+        k.Notes = Notes
+        return k
+  
+# the end of KYC class definition
 
+class Income:
+    PersonID = None
+    I_Type = None
+    I_Frequency = None
+    Income = None
+    Start_Date = None
+    End_Date = None
+    Notes = None
+    Current_Flag = None
+        
+    @classmethod
+    def New_Income(
+        cls,
+        PersonID,
+        I_Type,
+        I_Frequency,
+        Income,
+        Start_Date,
+        End_Date,
+        Notes,
+        Current_Flag):
+        
+        inco=cls()
+        inco.PersonID,
+        inco.I_Type,
+        inco.I_Frequency,
+        inco.Income,
+        inco.Start_Date,
+        inco.End_Date,
+        inco.Notes,
+        inco.Current_Flag
+        return inco
+  
+# the end of Income class definition  
 
 class ResponseDTO(object):
     Succeeded = False
